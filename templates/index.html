@@ -53,6 +53,8 @@
     <div class="container mt-5">
         <h1 class="mb-4">News Reader</h1>
         <form id="news-form">
+            <!-- Checkbox and form elements remain the same -->
+            <!-- Inside the form element -->
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="checkbox" name="sources" value="Bristol Post">
                 <label class="form-check-label">Bristol Post</label>
@@ -97,7 +99,7 @@
                 <input class="form-check-input" type="checkbox" name="horoscope_checkbox" value="include_horoscope">
                 <label class="form-check-label">Include Horoscope</label>
             </div>
-            <button type="button" class="btn btn-primary mt-3" id="fetch-news">Fetch News</button>
+
         </form>
         <div class="mt-4">
             <h3>Articles</h3>
@@ -116,6 +118,10 @@
         </div>
         <div class="mt-4 text-center">
             <div class="spinner-border text-primary" id="audio-loading-spinner" style="display: none; font-size: 5rem;"></div>
+        </div>
+        <div class="mt-4">
+            <button type="button" class="btn btn-success" id="play-audio">Play Audio</button>
+            <div class="spinner-border text-primary ml-2" id="loading-spinner" style="display: none;"></div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
