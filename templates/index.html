@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Reader</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">News Reader</h1>
+        <form id="news-form">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="sources" value="Bristol Post">
+                <label class="form-check-label">Bristol Post</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="sources" value="BBC Bristol">
+                <label class="form-check-label">BBC Bristol</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="sources" value="The Guardian Bristol">
+                <label class="form-check-label">The Guardian Bristol</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="weather_checkbox" value="include_weather">
+                <label class="form-check-label">Include Weather Data</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="traffic_checkbox" value="include_traffic">
+                <label class="form-check-label">Include Traffic Data</label>
+            </div>
+            
+            <div class="form-group">
+                <label for="tickers">Enter Stock/Crypto Ticklers (comma-separated):</label>
+                <input type="text" class="form-control" id="tickers" name="tickers">
+            </div>
+            <div class="form-group">
+                <label for="sport_team">What Sport Team Do You Support?</label>
+                <input type="text" class="form-control" id="sport_team" name="sport_team">
+            </div>
+            <div class="form-group">
+                <label for="inspirational_dropdown">Select an Inspirational Person:</label>
+                <select class="form-control" id="inspirational_dropdown" name="inspirational_dropdown">
+                    <option value="">Select...</option>
+                    <option value="Albert Einstein">Albert Einstein</option>
+                    <option value="Mahatma Gandhi">Mahatma Gandhi</option>
+                    <option value="Maya Angelou">Maya Angelou</option>
+                    <option value="Nelson Mandela">Nelson Mandela</option>
+                    <option value="Oprah Winfrey">Oprah Winfrey</option>
+                </select>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="horoscope_checkbox" value="include_horoscope">
+                <label class="form-check-label">Include Horoscope</label>
+            </div>
+            <button type="button" class="btn btn-primary mt-3" id="fetch-news">Fetch News</button>
+        </form>
+        <div class="mt-4">
+            <h3>Articles</h3>
+            <ul id="articles-list"></ul>
+        </div>
+        <div class="mt-4">
+            <button type="button" class="btn btn-primary" id="generate-summary">Generate Summary</button>
+        </div>
+        <div class="mt-4">
+            <h3>Summary</h3>
+            <p id="summary-text"></p>
+        </div>
+        <div class="mt-4">
+            <button type="button" class="btn btn-primary" id="generate-audio">Generate Audio</button>
+        </div>
+        <div class="mt-4">
+            <button type="button" class="btn btn-success" id="play-audio">Play Audio</button>
+            <div class="spinner-border text-primary ml-2" id="loading-spinner" style="display: none;"></div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("fetch-news").addEventListener("click", function () {
+                const form = document.getElementById("news-form");
+                const formData = new FormData(form);
+
+                fetch("/fetch_news", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if ("error" in data) {
+                        alert(data.error);
+                    } else {
+                        const articlesList = document.getElementById("articles-list");
+                        articlesList.innerHTML = "";
+
+                        data.articles.forEach(article => {
+                            const listItem = document.createElement("li");
+                            listItem.innerHTML = `<a href="${article.link}" target="_blank">${article.title}</a>`;
+                            articlesList.appendChild(listItem);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            });
+
+            document.getElementById("generate-summary").addEventListener("click", function () {
+                const form = document.getElementById("news-form");
+                const formData = new FormData(form);
+
+                fetch("/generate_summary", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("summary-text").textContent = data.summary;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            });
+
+            document.getElementById("generate-audio").addEventListener("click", function () {
+                document.getElementById("loading-spinner").style.display = "block";
+
+                fetch("/generate_audio", {
+                    method: "POST"
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("loading-spinner").style.display = "none";
+                    alert(data.message);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            });
+
+            document.getElementById("play-audio").addEventListener("click", function () {
+                const audio = new Audio('/download_audio');
+                audio.play();
+            });
+        });
+    </script>
+</body>
+</html>
