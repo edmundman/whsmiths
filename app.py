@@ -4,7 +4,7 @@ import openai
 from elevenlabs import generate, save ,set_api_key
 import random
 
-set_api_key("843d5bfaacb53957602b3495a16dcb28")
+set_api_key("843d5bfa3957602b3495a16dcb28")
 app = Flask(__name__)
 dialog =""
 # Set your OpenAI API key
