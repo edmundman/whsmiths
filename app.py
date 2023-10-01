@@ -8,7 +8,7 @@ set_api_key("843d5bfa3957602b3495a16dcb28")
 app = Flask(__name__)
 dialog =""
 # Set your OpenAI API key
-openai.api_key = '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'
+openai.api_key = 'sk-'
 
 # Define Bristol-related RSS feed URLs
 bristol_rss_sources = {
